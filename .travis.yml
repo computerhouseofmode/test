@@ -1,4 +1,5 @@
 language: generic
 script:
   - bash -e ./test.bash
+  - bash -e ./15746137
 
