@@ -1,0 +1,15 @@
+#!/bin/bash
+
+a=$1
+b=$2
+let r=${a}%${b}
+#echo ${r}
+
+while [ ${r} -ne 0 ] ;do
+	a=${b}
+	b=${r}
+	let r=${a}%${b}
+done
+echo ${b}
+
+
