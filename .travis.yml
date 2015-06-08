@@ -1,7 +1,7 @@
 language: generic
 script:
 
-  - bash -e ./15746137 50 100
-  - bash -e ./15746137 6 7
-  - bash -e ./15746137 10 -1
+  - bash -e ./15746137 50 100 = "50";echo $?
+  - bash -e ./15746137 6 7 = "1";echo $?
+  - bash -e ./15746137 10 -1 ="0" ; echo $?
 
