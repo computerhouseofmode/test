@@ -1,0 +1,18 @@
+{
+  "title": "Cooke Triplet  f=50mm F/5  ±20deg",
+  "wavelengths": ["F", "d", "C"],
+  "wavelength_weights": [1, 1, 1],
+  "primary": 1,
+  "fields": {"type": "angle", "values": [0, 14, 20]},
+  "aperture": {"type": "EPD", "value": 10},
+  "surfaces": [
+    {"radius": "inf", "thickness": "inf", "material": "AIR", "comment": "OBJ"},
+    {"radius": 22.01359, "thickness": 3.25896, "material": "N-SK16"},
+    {"radius": -435.76044, "thickness": 6.00755, "material": "AIR"},
+    {"radius": -22.21328, "thickness": 0.99997, "material": "F2"},
+    {"radius": 20.29192, "thickness": 4.75041, "material": "AIR", "stop": true},
+    {"radius": 79.6836, "thickness": 2.95208, "material": "N-SK16"},
+    {"radius": -18.39533, "thickness": 42.20778, "material": "AIR"},
+    {"radius": "inf", "thickness": 0, "material": "AIR", "comment": "IMG"}
+  ]
+}

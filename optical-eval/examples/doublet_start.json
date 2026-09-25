@@ -1,0 +1,24 @@
+{
+  "title": "Cemented achromat f=100 F/5 (start point)",
+  "wavelengths": ["F", "d", "C"],
+  "primary": 1,
+  "fields": {"type": "angle", "values": [0, 1.0, 1.5]},
+  "aperture": {"type": "EPD", "value": 20},
+  "surfaces": [
+    {"radius": "inf", "thickness": "inf", "comment": "OBJ"},
+    {"radius": 60.0, "thickness": 6.0, "material": "N-BK7", "stop": true},
+    {"radius": -45.0, "thickness": 2.5, "material": "F2"},
+    {"radius": -200.0, "thickness": 95.0, "material": "AIR"},
+    {"radius": "inf", "thickness": 0, "comment": "IMG"}
+  ],
+  "optimization": {
+    "variables": [
+      {"surface": 1, "param": "curvature"},
+      {"surface": 2, "param": "curvature"},
+      {"surface": 3, "param": "curvature"},
+      {"surface": 3, "param": "thickness", "min": 50, "max": 150}
+    ],
+    "targets": {"efl": 100.0, "efl_weight": 1.0},
+    "iterations": 40
+  }
+}
