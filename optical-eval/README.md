@@ -4,7 +4,28 @@
 近軸計算・実光線追跡・収差解析・回折評価・簡易最適化を行う Python ツールです。
 依存は NumPy と Matplotlib のみです。
 
-![layout](docs/images/layout.png)
+![Web UI](docs/images/webui.png)
+
+## すぐに使う（Web アプリ）
+
+```bash
+cd optical-eval
+pip install -e .                 # numpy と matplotlib が入ります
+opteval serve --open             # ブラウザで http://localhost:8000/ が開きます
+```
+
+* **レンズデータ** タブ: 表計算のように曲率半径・面間隔・硝材などを編集します（Enter で確定）。
+  編集するたびに右側の評価が自動で更新されます。
+  <kbd>V</kbd> ボタンで、その値を最適化の変数にします。行末の ＋ / × で面を挿入・削除します。
+* **システム** タブ: 波長（F, d, C などのプリセットあり）、視野（画角 / 物体高）、開口（EPD / FNO / NAO）
+* **最適化** タブ: 変数と範囲、EFL の目標値を指定して実行します。収束の履歴と変更前後の値を確認してから
+  「結果をレンズに適用」を押します。
+* 右側: 概要（一次量・結像性能）、レイアウト、スポット、横収差、OPD、像面湾曲・歪曲、波面、MTF、PSF、Seidel
+* 上部: サンプルを開く、新規、JSON ファイルを開く・保存、HTML レポートのダウンロード
+* 編集中のレンズはブラウザに自動保存され、次に開いたときに復元されます。
+
+別の PC やスマホから使う場合は `opteval serve --host 0.0.0.0 --port 8000` で起動します
+（認証はないので、信頼できるネットワーク内だけで使ってください）。
 
 ## 機能
 
@@ -19,8 +40,9 @@
 | 像性能評価 | スポットダイアグラム（RMS / GEO）、横収差図、OPD 図、波面マップ（RMS / P-V）、非点収差図・歪曲、FFT PSF（Strehl）、多色回折 MTF |
 | 最適化 | 減衰最小二乗法（Levenberg–Marquardt）、変数（曲率・面間隔・コーニック・非球面係数）、EFL 目標値、近軸像面ソルブ |
 | 出力 | テキストレポート、PNG 評価図、HTML レポート（図の埋め込み付き） |
+| Web UI | ブラウザ上でレンズ編集・全評価・最適化・ファイル入出力（標準ライブラリの HTTP サーバー、追加依存なし） |
 
-## 使い方
+## コマンドラインで使う
 
 ```bash
 cd optical-eval
@@ -83,6 +105,7 @@ print(seidel(sysm).wave_coefficients())
 |---|---|
 | ![spot](docs/images/spot.png) | ![mtf](docs/images/mtf.png) |
 
+![layout](docs/images/layout.png)
 ![field curves](docs/images/field_curves.png)
 
 ## 計算上の規約
@@ -103,8 +126,9 @@ print(seidel(sysm).wave_coefficients())
 * Cartesian oval（楕円面, k = −1/n²）が無収差になること（W = 0, Strehl = 1, MTF = 回折限界）
 * 小口径・小画角で、Seidel 係数（W040, W131, W222 + W220, W040 + W220）と実光線 OPD が 1–2 % 以内で一致すること
 * PSF の向きが光線追跡と一致すること、ケラレ、有限物体の倍率、JSON の往復変換、最適化の収束
+* Web API: 全解析・最適化・レポートの応答、エラー時の 400 応答、静的ファイルのパストラバーサル防止
 
 ## 今後の拡張候補
 
 ミラー（反射面）、偏心・傾き、実光線エイミング、公差解析、グローバル最適化、
-Zemax / CODE V 形式のインポート、GUI（Qt / Web）など。
+Zemax / CODE V 形式のインポート、グラフのインタラクティブ表示（ズーム・値の読み取り）など。

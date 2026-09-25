@@ -1,4 +1,4 @@
-"""コマンドライン:  python -m opteval {info,report,optimize} lens.json"""
+"""コマンドライン:  python -m opteval {info,report,optimize,serve} ..."""
 
 from __future__ import annotations
 
@@ -22,7 +22,17 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("lens")
     p.add_argument("-o", "--output", required=True, help="最適化後のレンズファイル (JSON)")
     p.add_argument("-n", "--iterations", type=int)
+    p = sub.add_parser("serve", help="ブラウザで使う Web UI を起動")
+    p.add_argument("--host", default="127.0.0.1")
+    p.add_argument("--port", type=int, default=8000)
+    p.add_argument("--open", action="store_true", help="起動後にブラウザを開く")
     args = ap.parse_args(argv)
+
+    if args.cmd == "serve":
+        from .web.server import serve
+
+        serve(args.host, args.port, open_browser=args.open)
+        return 0
 
     from . import report
 

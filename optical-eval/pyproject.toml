@@ -17,4 +17,7 @@ test = ["pytest"]
 opteval = "opteval.cli:main"
 
 [tool.setuptools]
-packages = ["opteval"]
+packages = ["opteval", "opteval.web"]
+
+[tool.setuptools.package-data]
+"opteval.web" = ["static/*"]

@@ -251,3 +251,29 @@ def plot_psfs(ev: an.Evaluator, half_width_um: float | None = None):
     fig.suptitle(f"FFT PSF (λ = {sysm.primary_wavelength:.4f} µm)", fontsize=10)
     fig.tight_layout()
     return fig
+
+
+def plot_seidel(ev: an.Evaluator):
+    from .paraxial import seidel
+
+    sd = seidel(ev.system)
+    keys = ["SI", "SII", "SIII", "SIV", "SV", "CI", "CII"]
+    nsurf = len(sd.SI)
+    labels = [str(j + 1) for j in range(nsurf)] + ["SUM"]
+    fig, ax = plt.subplots(figsize=(9, 4))
+    w = 0.8 / len(keys)
+    x = np.arange(nsurf + 1)
+    cmap = plt.get_cmap("tab10")
+    for i, k in enumerate(keys):
+        v = getattr(sd, k)
+        ax.bar(x + (i - len(keys) / 2 + 0.5) * w, np.append(v, v.sum()), w, label=k, color=cmap(i))
+    ax.axhline(0, color="k", lw=0.6)
+    ax.axvline(nsurf - 0.5, color="k", lw=0.6, ls=":")
+    ax.set_xticks(x, labels)
+    ax.set_xlabel("Surface")
+    ax.set_ylabel("Seidel sum [mm]")
+    ax.set_title("Seidel aberration contributions")
+    ax.legend(fontsize=8, ncol=7, loc="upper center", bbox_to_anchor=(0.5, -0.15))
+    ax.grid(alpha=0.2, axis="y")
+    fig.tight_layout()
+    return fig

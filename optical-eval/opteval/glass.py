@@ -69,7 +69,7 @@ def refractive_index(material, wl: float) -> float:
     try:
         return float(name)
     except ValueError:
-        raise KeyError(f"unknown material: {material!r}") from None
+        raise KeyError(f"未知の硝材です: {material}") from None
 
 
 def abbe_number(material) -> float:
