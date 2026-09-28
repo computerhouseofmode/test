@@ -4,13 +4,15 @@
 articles/_index.json（fetch_articles.py の出力）を読み、
 - 本文の長さで1記事あたりの件数を決める（各区分の幅の中で、長いほど多く）
     〜2000字: 5〜7件 / 2001〜5000字: 8〜11件 / 5001字〜: 12〜15件
-- 合計が TARGET を超える場合は、公開日順に等間隔で記事を選び、合計が TARGET に最も近くなるようにする
+- 既定では対象記事をすべて使う（合計は MIN_TOTAL 以上あればよい）
+- MAX_TOTAL を設定した場合のみ、合計がそれを超えるとき公開日順に等間隔で記事を選び、MAX_TOTAL に最も近くなるようにする
 結果を selection.json と selection.md に書き出す。
 """
 import json
 from pathlib import Path
 
-TARGET = 1000
+MIN_TOTAL = 1000  # 目安。下回った場合は報告する
+MAX_TOTAL = None  # 上限を設けて絞り込むときだけ数値を入れる
 BANDS = [  # (下限字数, 上限字数, 最小件数, 最大件数)
     (300, 2000, 5, 7),
     (2001, 5000, 8, 11),
@@ -41,14 +43,14 @@ def main():
     for r in arts:
         r["alloc"] = allocate(r["chars"])
 
-    if sum(r["alloc"] for r in arts) <= TARGET:
+    if MAX_TOTAL is None or sum(r["alloc"] for r in arts) <= MAX_TOTAL:
         chosen = arts
     else:
         best = None
         for n in range(1, len(arts) + 1):
             idx = evenly(n, len(arts))
             s = sum(arts[i]["alloc"] for i in idx)
-            if best is None or abs(s - TARGET) < abs(best[0] - TARGET):
+            if best is None or abs(s - MAX_TOTAL) < abs(best[0] - MAX_TOTAL):
                 best = (s, idx)
         chosen = [arts[i] for i in best[1]]
 
@@ -69,6 +71,8 @@ def main():
         lines.append(f"| {i} | {r['published']} | {title} | {r['chars']} | {r['alloc']} |")
     (ROOT / "selection.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"選定 {len(out)}/{len(arts)} 記事, 見込み {total} 件")
+    if total < MIN_TOTAL:
+        print(f"注意: 見込み総件数が {MIN_TOTAL} 件に届いていません")
 
 
 if __name__ == "__main__":
