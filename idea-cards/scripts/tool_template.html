@@ -54,54 +54,46 @@
   --focus: #7FB0E6;
 }
 
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
 body {
+  margin: 0;
   background: var(--desk);
   color: var(--desk-ink);
   font-family: var(--gothic);
-  font-size: 15px;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.6;
 }
 .wrap {
-  max-width: 1120px;
+  height: 100%;
+  max-width: 1040px;
   margin: 0 auto;
   padding-inline: 16px;
-  padding-block: 28px 48px;
+  padding-block: 14px 10px;
   display: grid;
-  gap: 22px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
 }
 header {
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px 24px;
+  gap: 8px 16px;
 }
 h1 {
   margin: 0;
   font-family: var(--mincho);
   font-weight: 700;
-  font-size: clamp(22px, 3.2vw, 30px);
+  font-size: clamp(19px, 2.6vw, 24px);
   letter-spacing: .04em;
-  text-wrap: balance;
-}
-.source {
-  margin: 2px 0 0;
-  font-size: 12.5px;
-  color: var(--muted);
-}
-.source b { font-weight: 500; color: var(--desk-ink); }
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 14px;
+  line-height: 1.3;
 }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {
-  font: 500 12.5px/1 var(--gothic);
+  font: 500 12px/1 var(--gothic);
   letter-spacing: .04em;
-  padding: 8px 12px;
+  padding: 7px 11px;
   border-radius: 999px;
   border: 1px solid var(--rule);
   background: var(--chip);
@@ -109,130 +101,135 @@ h1 {
   cursor: pointer;
 }
 .chip[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on); }
-.draw {
-  font: 700 15px/1 var(--gothic);
-  letter-spacing: .08em;
-  padding: 13px 22px;
-  border-radius: 6px;
-  border: 0;
-  background: var(--red);
-  color: #fff;
-  cursor: pointer;
-  box-shadow: 0 2px 0 rgba(0, 0, 0, .18);
-}
-.draw:active { transform: translateY(1px); box-shadow: none; }
-.textbtn {
-  font: 500 12.5px/1 var(--gothic);
-  background: none;
-  border: 0;
-  padding: 8px 4px;
-  color: var(--muted);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-button:focus-visible, a:focus-visible, label:focus-within { outline: 2px solid var(--focus); outline-offset: 3px; }
+button:focus-visible, a:focus-visible, label:focus-within, .card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 
-.spread {
+/* カードと「3枚引く」をひとまとまりにする。スマホは画面の残りいっぱい、広い画面は上下中央 */
+.stage {
+  min-height: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
-  align-items: start;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 12px;
 }
-@media (max-width: 820px) { .spread { grid-template-columns: 1fr; max-width: 520px; width: 100%; margin: 0 auto; } }
+@media (min-width: 760px) {
+  .stage { grid-template-rows: minmax(0, 330px) auto; align-content: center; gap: 22px; }
+}
 
-.slot { display: grid; gap: 8px; }
+/* 3枚のカード。スマホは縦に3段、広い画面は横に3列。どちらも画面の残りの高さに収める */
+.spread {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (min-width: 760px) {
+  .spread {
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+}
+
 .card {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  text-align: left;
-  font: inherit;
-  cursor: pointer;
+  min-height: 0;
+  height: 100%;
   perspective: 1400px;
   border-radius: 4px;
+  cursor: pointer;
+  outline: none;
 }
 .inner {
+  height: 100%;
   display: grid;
-  transition: transform .55s cubic-bezier(.2, .7, .2, 1);
+  transition: transform .5s cubic-bezier(.2, .7, .2, 1);
   transform-style: preserve-3d;
 }
 .card[aria-pressed="true"] .inner { transform: rotateY(180deg); }
 .face {
   grid-area: 1 / 1;
+  min-height: 0;
+  overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   background-color: var(--paper);
-  background-image: repeating-linear-gradient(to bottom, transparent 0 27px, var(--rule) 27px 28px);
-  background-position: 0 58px;
-  background-size: 100% calc(100% - 58px);
+  background-image: repeating-linear-gradient(to bottom, transparent 0 21px, var(--rule) 21px 22px);
+  background-position: 0 38px;
+  background-size: 100% calc(100% - 38px);
   background-repeat: no-repeat;
   border-radius: 4px;
   box-shadow: var(--shadow);
-  min-height: 300px;
-  padding: 16px 18px 18px;
+  padding: 7px 12px 8px;
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 10px;
+  grid-template-rows: 22px minmax(0, 1fr) auto;
+  gap: 8px;
   position: relative;
 }
 .face::before {
   content: "";
   position: absolute;
-  left: 0; right: 0; top: 46px;
+  left: 0; right: 0; top: 32px;
   border-top: 1.5px solid var(--red);
 }
 .back { transform: rotateY(180deg); }
 .meta {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 8px;
-  height: 22px;
-  font: 500 11.5px/1 var(--mono);
-  letter-spacing: .06em;
+  min-width: 0;
+  font: 500 11px/1 var(--mono);
+  letter-spacing: .05em;
   color: var(--muted);
 }
+.meta .date { margin-left: auto; }
 .type {
   font-family: var(--gothic);
   font-weight: 700;
   letter-spacing: .1em;
   color: var(--red);
 }
+.redo {
+  font: 500 11px/1 var(--gothic);
+  background: none;
+  border: 0;
+  padding: 5px 2px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.redo:hover { color: var(--ink); }
 .word {
   align-self: center;
-  margin: 18px 0 8px;
+  margin: 0;
   font-family: var(--mincho);
   font-weight: 700;
-  font-size: 23px;
-  line-height: 1.55;
+  font-size: 19px;
+  line-height: 1.5;
   color: var(--ink);
   text-wrap: balance;
   overflow-wrap: anywhere;
 }
-.word.sentence { font-weight: 500; font-size: 19px; line-height: 1.75; }
-.hint { font-size: 11.5px; color: var(--muted); }
+.word.sentence { font-weight: 500; font-size: 16px; line-height: 1.65; }
+.hint { font-size: 10.5px; color: var(--muted); }
 .backword {
   font-family: var(--mincho);
   font-weight: 700;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 13px;
   color: var(--ink);
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .backtext {
-  margin: 12px 0 0;
-  font-size: 14px;
-  line-height: 28px;
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 22px;
   color: var(--ink);
+  overflow-y: auto;
+  min-height: 0;
 }
 .dict {
-  font: 700 10.5px/1 var(--gothic);
+  flex: none;
+  font: 700 10px/1 var(--gothic);
   letter-spacing: .08em;
-  padding: 4px 6px;
+  padding: 3px 5px;
   border: 1px solid var(--muted);
   border-radius: 3px;
 }
@@ -241,67 +238,86 @@ button:focus-visible, a:focus-visible, label:focus-within { outline: 2px solid v
   justify-content: space-between;
   align-items: baseline;
   gap: 8px;
-  font-size: 12.5px;
+  font-size: 11px;
+  line-height: 1.4;
   color: var(--muted);
 }
-.src a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--rule); }
-.src time { font-family: var(--mono); font-size: 11.5px; white-space: nowrap; }
-.one {
-  justify-self: end;
-  font: 500 12px/1 var(--gothic);
-  background: none;
+.src a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--rule);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.src time { font-family: var(--mono); font-size: 10.5px; white-space: nowrap; }
+
+.drawbar { display: flex; justify-content: center; }
+.draw {
+  font: 700 15px/1 var(--gothic);
+  letter-spacing: .08em;
+  padding: 13px 40px;
+  border-radius: 6px;
   border: 0;
-  padding: 6px 2px;
-  color: var(--muted);
+  background: var(--red);
+  color: #fff;
   cursor: pointer;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .18);
 }
-.one:hover, .textbtn:hover { color: var(--desk-ink); }
+.draw:active { transform: translateY(1px); box-shadow: none; }
 
 .foot {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 18px;
+  gap: 4px 14px;
   align-items: center;
-  font-size: 12.5px;
+  font-size: 11.5px;
   color: var(--muted);
-  border-top: 1px solid var(--rule);
-  padding-top: 16px;
+}
+.textbtn {
+  font: 500 11.5px/1 var(--gothic);
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  color: var(--desk-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
 }
 .foot input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .foot label { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; color: var(--desk-ink); }
+.foot .spacer { flex: 1; }
 .msg { color: var(--desk-ink); }
 .msg.err { color: var(--red); }
-.empty { grid-column: 1 / -1; padding: 40px 0; text-align: center; color: var(--muted); }
+.empty { grid-column: 1 / -1; grid-row: 1 / -1; align-self: center; text-align: center; color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) { .inner { transition: none; } }
 </style>
 
 <div class="wrap">
   <header>
-    <div>
-      <h1>もーふの発想カード</h1>
-      <p class="source" id="source"></p>
-    </div>
-    <div class="controls">
-      <div class="chips" role="group" aria-label="種別で絞り込む">
-        <button class="chip" id="f-all" data-type="" aria-pressed="true">すべて</button>
-        <button class="chip" id="f-noun" data-type="固有名詞" aria-pressed="false">固有名詞</button>
-        <button class="chip" id="f-concept" data-type="概念" aria-pressed="false">概念</button>
-        <button class="chip" id="f-sentence" data-type="文" aria-pressed="false">文</button>
-      </div>
-      <button class="draw" id="draw">3枚引く</button>
+    <h1>もーふの発想カード</h1>
+    <div class="chips" role="group" aria-label="種別で絞り込む">
+      <button class="chip" id="f-all" data-type="" aria-pressed="true">すべて</button>
+      <button class="chip" id="f-noun" data-type="固有名詞" aria-pressed="false">固有名詞</button>
+      <button class="chip" id="f-concept" data-type="概念" aria-pressed="false">概念</button>
+      <button class="chip" id="f-sentence" data-type="文" aria-pressed="false">文</button>
     </div>
   </header>
 
-  <main class="spread" id="spread" aria-live="polite"></main>
+  <div class="stage">
+    <main class="spread" id="spread" aria-live="polite"></main>
+    <div class="drawbar"><button class="draw" id="draw">3枚引く</button></div>
+  </div>
 
   <div class="foot">
+    <span id="source"></span>
     <button class="textbtn" id="flipall">すべて裏返す</button>
-    <span>カードをタップで裏返し ・ スペースキーで引き直し</span>
-    <span style="flex:1"></span>
+    <span class="spacer"></span>
     <label for="csv">cards.csv を読み込む</label>
     <input type="file" id="csv" accept=".csv,text/csv">
-    <button class="textbtn" id="reset" hidden>埋め込みの候補に戻す</button>
+    <button class="textbtn" id="reset" hidden>候補に戻す</button>
     <span class="msg" id="msg"></span>
   </div>
 </div>
@@ -378,25 +394,41 @@ function el(tag, cls, text) {
   return e;
 }
 
+function redoButton(i) {
+  const b = el("button", "redo", "↻ 引き直す");
+  b.setAttribute("aria-label", "この1枚を引き直す");
+  b.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const next = pick(1, hand)[0];
+    if (!next) return;
+    hand[i] = next;
+    render();
+  });
+  return b;
+}
+
+function flip(card) {
+  card.setAttribute("aria-pressed", card.getAttribute("aria-pressed") === "true" ? "false" : "true");
+}
+
 function renderCard(c, i) {
-  const slot = el("div", "slot");
-  const btn = el("button", "card");
-  btn.id = "card-" + i;
-  btn.setAttribute("aria-pressed", "false");
-  btn.setAttribute("aria-label", c[0] + "（タップで裏返す）");
+  const card = el("div", "card");
+  card.id = "card-" + i;
+  card.tabIndex = 0;
+  card.setAttribute("role", "button");
+  card.setAttribute("aria-pressed", "false");
+  card.setAttribute("aria-label", c[0] + "（タップで裏返す）");
   const inner = el("div", "inner");
 
   const front = el("div", "face front");
   const fm = el("div", "meta");
-  fm.append(el("span", "type", c[1]), el("span", "", c[5] ? c[5].slice(0, 7).replace("-", ".") : ""));
+  fm.append(el("span", "type", c[1]), el("span", "date", c[5] ? c[5].slice(0, 7).replace("-", ".") : ""), redoButton(i));
   front.append(fm, el("div", "word" + (c[1] === "文" ? " sentence" : ""), c[0]), el("div", "hint", "タップで裏面"));
 
   const back = el("div", "face back");
   const bm = el("div", "meta");
-  bm.append(el("span", "type", c[1]));
+  bm.append(el("span", "backword", c[0]));
   if (c[6] === "辞書") bm.append(el("span", "dict", "辞書"));
-  const body = el("div");
-  body.append(el("div", "backword", c[0]), el("p", "backtext", c[2]));
   const src = el("div", "src");
   if (c[4]) {
     const a = el("a", "", c[3] || c[4]);
@@ -405,28 +437,22 @@ function renderCard(c, i) {
     src.append(a);
   } else src.append(el("span", "", c[3]));
   src.append(el("time", "", c[5] || ""));
-  back.append(bm, body, src);
+  back.append(bm, el("p", "backtext", c[2]), src);
 
   inner.append(front, back);
-  btn.append(inner);
-  btn.addEventListener("click", () => {
-    btn.setAttribute("aria-pressed", btn.getAttribute("aria-pressed") === "true" ? "false" : "true");
+  card.append(inner);
+  card.addEventListener("click", () => flip(card));
+  card.addEventListener("keydown", (e) => {
+    if (e.target !== card) return;
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(card); }
   });
-
-  const one = el("button", "one", "この1枚を引き直す");
-  one.addEventListener("click", () => {
-    const next = pick(1, hand)[0];
-    if (!next) return;
-    hand[i] = next;
-    render();
-  });
-  slot.append(btn, one);
-  return slot;
+  return card;
 }
 
 function render() {
   const s = $("spread");
   s.replaceChildren();
+  $("flipall").textContent = "すべて裏返す";
   if (!hand.length) {
     s.append(el("p", "empty", "この条件のカードがありません。"));
     return;
@@ -441,9 +467,7 @@ function draw() {
 
 function showSource() {
   const arts = new Set(cards.map((c) => c[4])).size;
-  const s = $("source");
-  s.replaceChildren();
-  s.append(el("b", "", label), `　${cards.length}枚 ・ ${arts}記事`);
+  $("source").textContent = `${label} ${cards.length}枚・${arts}記事`;
   $("reset").hidden = cards === EMBEDDED;
 }
 
@@ -464,13 +488,14 @@ document.querySelectorAll(".chip").forEach((b) => b.addEventListener("click", ()
 }));
 $("draw").addEventListener("click", draw);
 $("flipall").addEventListener("click", () => {
-  const btns = [...document.querySelectorAll(".card")];
-  const anyFront = btns.some((b) => b.getAttribute("aria-pressed") !== "true");
-  btns.forEach((b) => b.setAttribute("aria-pressed", String(anyFront)));
+  const all = [...document.querySelectorAll(".card")];
+  const anyFront = all.some((b) => b.getAttribute("aria-pressed") !== "true");
+  all.forEach((b) => b.setAttribute("aria-pressed", String(anyFront)));
   $("flipall").textContent = anyFront ? "すべて表に戻す" : "すべて裏返す";
 });
 document.addEventListener("keydown", (e) => {
-  if (e.code === "Space" && !(e.target instanceof HTMLButtonElement) && !(e.target instanceof HTMLInputElement)) {
+  const t = e.target;
+  if (e.code === "Space" && !(t instanceof HTMLButtonElement) && !(t instanceof HTMLInputElement) && !(t.classList && t.classList.contains("card"))) {
     e.preventDefault(); draw();
   }
 });
