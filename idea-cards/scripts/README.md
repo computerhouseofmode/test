@@ -9,7 +9,6 @@
    - `python3 scripts/dedupe.py` — 記事をまたいだ同一ワードを最大3枚に制限（削る対象を `dedupe.json` に記録）
 4. `python3 scripts/build_candidates.py` — `candidates.csv` を作成（記入済みの採否は引き継ぐ）
 5. `candidates.csv` の採否列に ○ / 〇 / o / 1 / y を記入し、`python3 scripts/finalize.py` で `cards.csv` を作成
-
 6. `python3 scripts/build_tool.py` — 発想カードのツール `tool/hasso-cards.html` を作成（cards.csv があればそれを、なければ候補を埋め込む）
 
 `articles/` は記事本文のローカル保存のみで、git管理から除外している。
